@@ -1,0 +1,22 @@
+html(lang="en")
+  include includes/head.pug
+  body
+    include includes/header.pug
+    h1 form 
+    form(action="/form", method='POST', autoComplete="off")
+      div.form__section
+        label(for="username") your name
+        input(type="text", name="username", id="username")
+      div.form__section
+        label(for="password") password
+        input(type="password", name="password", id="password")
+      div.form__section 
+        select(name="gender")
+          option(value="gender", selected, hidden) gender
+          option(value="male") male
+          option(value="female") female
+      div.form__section
+          input(type="checkbox", name="agree", id="agree")
+          label(for="agree") I agree to terms
+      button(type="submit") Submit
+    include includes/footer.pug

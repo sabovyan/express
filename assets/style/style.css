@@ -1,3 +1,60 @@
 body {
-  background-color: rgb(214, 233, 240);
+  background-color: #f3f3f3;
+}
+h1 {
+  color: red;
+  text-transform: capitalize;
+}
+h2 {
+  color: orange;
+  text-transform: capitalize;
+}
+h3 {
+  color: lightblue;
+  text-transform: capitalize;
+}
+
+a {
+  color: black;
+}
+
+nav > ul {
+  display: flex;
+  list-style: none;
+}
+nav > ul > li > a {
+  margin: 10px;
+  text-decoration: none;
+}
+nav > ul > li > a:hover {
+  color: red;
+}
+
+form,
+.form__section {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+.form__section {
+  margin: 1rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+form > .form__section:nth-child(4) {
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+
+.form__section > input,
+.form__section > label,
+.form__section > select,
+form > button {
+  padding: 10px;
+  width: 100%;
+  font-size: 1.1rem;
 }
