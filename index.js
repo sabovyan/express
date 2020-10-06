@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
-const pug = require('pug');
+const getUser = require('./helper/user.helper');
 
 const users = JSON.parse(
   fs.readFileSync(path.join(__dirname, '/users/users.json'), {
@@ -9,19 +9,11 @@ const users = JSON.parse(
   })
 );
 
-function getUser(name, users) {
-  let result;
-  for (let user of users) {
-    if (user.name.toLowerCase() === name.toLowerCase()) {
-      result = Object.assign({}, user);
-    }
-  }
-  return result;
-}
-
 const app = express();
 
 app.set('view engine', 'pug');
+
+app.use('/assets', express.static('assets'));
 
 app.get('/', (req, res) => {
   res.render(path.join(__dirname, '/pages/index.pug'));
@@ -40,11 +32,11 @@ app.get('/profiles/:name', (req, res) => {
   });
 });
 
-app.use(function (req, res, next) {
-  res
-    .status(404)
-    .render(path.join(__dirname, '/pages/404.pug'), { url: req.url });
-});
+// app.use(function (req, res, next) {
+//   res
+//     .status(404)
+//     .render(path.join(__dirname, '/pages/404.pug'), { url: req.url });
+// });
 
 app.listen(5000);
 
