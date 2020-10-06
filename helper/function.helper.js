@@ -8,7 +8,7 @@ function getUser(name, users) {
   return result;
 }
 
-function getDate() {
+function getTime() {
   const date = new Date();
   let hh = date.getHours();
   let mm = date.getMinutes();
@@ -28,5 +28,5 @@ function getDate() {
 
 module.exports = {
   getUser,
-  getDate,
+  getTime,
 };
