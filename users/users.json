@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "name": "Danny",
+    "age": 18,
+    "job": "teacher",
+    "bestFriend": "Allen"
+  },
+
+  {
+    "id": 2,
+    "name": "Allen",
+    "age": 32,
+    "job": "Designer",
+    "bestFriend": "Danny"
+  },
+  {
+    "id": 3,
+    "name": "Red Hat",
+    "age": 7,
+    "job": "Architect",
+    "bestFriend": "Bear"
+  },
+  {
+    "id": 4,
+    "name": "Bear",
+    "age": 7,
+    "job": "Hunter",
+    "bestFriend": "Red Hat"
+  }
+]

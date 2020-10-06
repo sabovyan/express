@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+html(lang="en")
+  include includes/head.pug
+  body
+    include includes/header.pug
+    h1 here are available profiles
+    
+    div 
+      each user in users
+        h3 #[a(href=`/profiles/${user.name.toLowerCase()}`)= user.name]
+    include includes/footer.pug
