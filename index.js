@@ -4,7 +4,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
-const { getUser, getDate } = require('./helper/function.helper');
+const { getUser, getTime } = require('./helper/function.helper');
 
 const users = JSON.parse(
   fs.readFileSync(path.join(__dirname, '/users/users.json'), {
@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/assets', express.static('assets'));
 
 app.use('/', function (req, res, next) {
-  const time = JSON.stringify(getDate());
+  const time = JSON.stringify(getTime());
 
   res.cookie('time', time);
   next();
@@ -75,7 +75,7 @@ app.post('/form', (req, res) => {
     username: req.body.username,
     password: req.body.password,
     gender: req.body.gender,
-    agreed: req.body.agree,
+    agreed: req.body.agree ? true : false,
   };
   userData.push(user);
   console.log(user);
@@ -87,6 +87,45 @@ app.get('/result', (req, res) => {
   res.send(resultData);
 });
 
+/* API */
+
+app.get('/api/time', (req, res) => {
+  const result = {
+    time: getTime(),
+  };
+  res.send(JSON.stringify(result));
+});
+app.post('/api/users', (req, res) => {
+  const { username } = req.body;
+  const { gender } = req.body;
+  const { agree } = req.body;
+  const { password } = req.body;
+  if (typeof username !== 'string') {
+    throw new Error('the username value is not valid');
+  }
+  if (typeof gender !== 'string') {
+    throw new Error('the gender value is not valid');
+  }
+  if (typeof agree !== 'boolean') {
+    throw new Error('the agree value is not valid');
+  }
+  if (typeof password !== 'string') {
+    throw new Error('the password value is not valid');
+  }
+  const user = {
+    username,
+    gender,
+    agree,
+    password,
+  };
+  userData.push(user);
+  res.send(JSON.stringify(userData));
+});
+
+app.get('/api/users', (req, res) => {
+  res.send(JSON.stringify(userData));
+});
+
 // 404
 app.use(function (req, res, next) {
   res
@@ -94,6 +133,4 @@ app.use(function (req, res, next) {
     .render(path.join(__dirname, '/pages/404.pug'), { url: req.url });
 });
 
-app.listen(5000);
-
-console.log('yo');
+app.listen(5000, () => console.log('y.o.'));
