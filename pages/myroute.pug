@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+html(lang="en")
+  include includes/head.pug
+  body
+    include includes/header.pug
+    h1 data from #{title} 
+    if value
+      p #{value}
+    else 
+      p No available data
+    include includes/footer.pug

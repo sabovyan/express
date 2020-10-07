@@ -5,15 +5,17 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 const { getUser, getTime } = require('./helper/function.helper');
+const {
+  getTimeFromAPI,
+  postUserToAPI,
+  getUsersFromAPI,
+} = require('./helper/api.helper');
 
-const users = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '/users/users.json'), {
-    encoding: 'utf-8',
-  })
-);
+const { getALLProfiles, getProfile } = require('./helper/profile.helper');
+
 const userData = [];
-
 const app = express();
+let params;
 
 app.set('view engine', 'pug');
 app.use(cookieParser());
@@ -23,7 +25,6 @@ app.use('/assets', express.static('assets'));
 
 app.use('/', function (req, res, next) {
   const time = JSON.stringify(getTime());
-
   res.cookie('time', time);
   next();
 });
@@ -35,39 +36,38 @@ app.get('/', (req, res) => {
   });
 });
 
-// app.use('/myroute', function (req, res, next) {
-//   next();
-// });
-
-// app.get('/myroute/:param', (req, res) => {
-//   console.log(req.params.param);
-//   // console.log(req.query());
-//   // console.log(req.cookies);
-//   console.log(typeof req.params.param);
-//   res.render(path.join(__dirname, '/pages/myroute.pug'), {
-//     title: req.params.param,
-//   });
-// });
-
-app.get('/profiles', (req, res) => {
-  res.render(path.join(__dirname, '/pages/profiles.pug'), { users });
+app.use('/myroute/:param', function (req, res, next) {
+  params = {
+    param: req.params.param,
+    header: req.headers,
+    query: req.query,
+    cookie: req.cookies,
+  };
+  console.log(params);
+  next();
 });
 
-app.get('/profiles/:name', (req, res) => {
-  const requestedName = req.params.name;
-
-  const user = getUser(requestedName, users);
-  if (user) {
-    res.render(path.join(__dirname, '/pages/profile.pug'), {
-      user,
-    });
-  } else {
-    res.status(500).send('this page is not found');
+app.get('/myroute/:param', (req, res) => {
+  let value;
+  for (let [key, val] of Object.entries(params)) {
+    if (key === req.params.param) {
+      value = JSON.stringify(val);
+    }
   }
+  res.render(path.join(__dirname, '/pages/myroute.pug'), {
+    title: req.params.param,
+    value,
+  });
 });
 
+/* profiles */
+
+app.get('/profiles', getALLProfiles);
+app.get('/profiles/:name', getProfile);
+
+/* Form */
 app.get('/form', (req, res) => {
-  res.render(path.join(__dirname, '/pages/form.pug'), { users });
+  res.render(path.join(__dirname, '/pages/form.pug'));
 });
 
 app.post('/form', (req, res) => {
@@ -78,7 +78,7 @@ app.post('/form', (req, res) => {
     agreed: req.body.agree ? true : false,
   };
   userData.push(user);
-  console.log(user);
+
   res.redirect('/result');
 });
 
@@ -89,42 +89,11 @@ app.get('/result', (req, res) => {
 
 /* API */
 
-app.get('/api/time', (req, res) => {
-  const result = {
-    time: getTime(),
-  };
-  res.send(JSON.stringify(result));
-});
-app.post('/api/users', (req, res) => {
-  const { username } = req.body;
-  const { gender } = req.body;
-  const { agree } = req.body;
-  const { password } = req.body;
-  if (typeof username !== 'string') {
-    throw new Error('the username value is not valid');
-  }
-  if (typeof gender !== 'string') {
-    throw new Error('the gender value is not valid');
-  }
-  if (typeof agree !== 'boolean') {
-    throw new Error('the agree value is not valid');
-  }
-  if (typeof password !== 'string') {
-    throw new Error('the password value is not valid');
-  }
-  const user = {
-    username,
-    gender,
-    agree,
-    password,
-  };
-  userData.push(user);
-  res.send(JSON.stringify(userData));
-});
+app.get('/api/time', getTimeFromAPI);
 
-app.get('/api/users', (req, res) => {
-  res.send(JSON.stringify(userData));
-});
+app.post('/api/users', postUserToAPI);
+
+app.get('/api/users', getUsersFromAPI);
 
 // 404
 app.use(function (req, res, next) {
@@ -133,4 +102,4 @@ app.use(function (req, res, next) {
     .render(path.join(__dirname, '/pages/404.pug'), { url: req.url });
 });
 
-app.listen(5000, () => console.log('y.o.'));
+app.listen(5000, () => console.log('port: 5000'));
